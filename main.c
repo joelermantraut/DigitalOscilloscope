@@ -41,14 +41,14 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define ADC_BUF_SIZE 		4096
+#define ADC_BUF_SIZE 		1024
 #define USART_TIMEOUT 		1000
 #define NS  				128
 
-#define LED_AZUL		GPIO_PIN_15
-#define LED_VERDE		GPIO_PIN_12
-#define LED_ROJO		GPIO_PIN_14
-#define LED_NARANJA		GPIO_PIN_13
+#define LED_AZUL		GPIO_PIN_3
+#define LED_VERDE		GPIO_PIN_6
+#define LED_ROJO		GPIO_PIN_3
+#define LED_NARANJA		GPIO_PIN_6
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -187,16 +187,16 @@ int main(void)
 	// Indicador de funcionamiento
 
 	if (Wave_LUT == Wave_LUT_Sin) {
-		HAL_GPIO_WritePin(GPIOD, LED_NARANJA, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOD, LED_VERDE, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOB, LED_NARANJA, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOB, LED_VERDE, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOD, LED_ROJO, GPIO_PIN_SET);
 	} else if (Wave_LUT == Wave_LUT_Tri) {
-		HAL_GPIO_WritePin(GPIOD, LED_NARANJA, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOD, LED_VERDE, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOB, LED_NARANJA, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOB, LED_VERDE, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOD, LED_ROJO, GPIO_PIN_RESET);
 	} else if (Wave_LUT == Wave_LUT_Sq) {
-		HAL_GPIO_WritePin(GPIOD, LED_NARANJA, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOD, LED_VERDE, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOB, LED_NARANJA, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOB, LED_VERDE, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOD, LED_ROJO, GPIO_PIN_RESET);
 	}
 	// Indicador de forma de onda del generador
@@ -211,27 +211,6 @@ int main(void)
 		HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_2, Wave_LUT, NS, DAC_ALIGN_12B_R);
 
 		buttonFlag = 0;
-	}
-
-	if (DMA_ready) {
-		for(i = 0; i < ADC_BUF_SIZE / 2; i=i+2) {
-			ADC_buffer[i] = ADC_buffer[i] | 0x80;
-			// Seteo el big mas significativo de la palabra
-			// mas significativa
-			// Solo de los elementos del canal 1
-		}
-
-		DMA_ready = 0;
-	}
-	if (DMA_half_ready) {
-		for(i = ADC_BUF_SIZE / 2; i < ADC_BUF_SIZE; i=i+2) {
-			ADC_buffer[i] = ADC_buffer[i] | 0x80;
-			// Seteo el big mas significativo de la palabra
-			// mas significativa
-			// Solo de los elementos del canal 1
-		}
-
-		DMA_half_ready = 0;
 	}
 
   }
